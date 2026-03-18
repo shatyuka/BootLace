@@ -1,0 +1,27 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = BootLace
+  FILE_GUID                      = 16F251CA-69E9-4C78-93DB-A18DE5D53E72
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = UefiMain
+
+[Sources]
+  BootLace.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DevicePathLib
+  UefiLib
+  BaseLib
+  BaseMemoryLib
+  PrintLib
+  DebugLib
+  DebugPrintErrorLevelLib
+  PcdLib
+  MemoryAllocationLib
