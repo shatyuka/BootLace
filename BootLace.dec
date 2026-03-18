@@ -1,0 +1,8 @@
+[Defines]
+  DEC_SPECIFICATION              = 0x00010006
+  PACKAGE_NAME                   = BootLace
+  PACKAGE_GUID                   = ABA7CC94-EFF5-4B50-8EED-FE7B37E371F3
+  PLATFORM_VERSION               = 1.0
+
+[Includes]
+  Lvgl

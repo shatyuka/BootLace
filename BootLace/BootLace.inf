@@ -8,9 +8,11 @@
 
 [Sources]
   BootLace.c
+  gui/image_cursor.c
 
 [Packages]
   MdePkg/MdePkg.dec
+  BootLace.dec
 
 [LibraryClasses]
   UefiDriverEntryPoint
@@ -25,3 +27,5 @@
   DebugPrintErrorLevelLib
   PcdLib
   MemoryAllocationLib
+
+  Lvgl

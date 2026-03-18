@@ -28,5 +28,8 @@
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
 
+  Lvgl|Lvgl/Lvgl.inf
+
 [Components]
   BootLace/BootLace.inf
+  Lvgl/Lvgl.inf
