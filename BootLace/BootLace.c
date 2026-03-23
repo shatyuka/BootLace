@@ -32,6 +32,19 @@ EFI_STATUS EFIAPI UefiMain(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* Syste
 
   lv_display_t* display = lv_uefi_display_create(displayHandle);
   lv_display_set_default(display);
+  int32_t w = lv_display_get_original_horizontal_resolution(display);
+  int32_t h = lv_display_get_original_vertical_resolution(display);
+  int32_t min = MIN(w, h);
+  int32_t dpi = min * 160 / 720;
+  int32_t scale_factor = min * 256 / 720;
+  lv_display_set_dpi(display, dpi);
+  lv_display_set_antialiasing(display, true);
+
+#if LV_USE_THEME_DEFAULT
+  lv_theme_t* theme = lv_theme_default_init(display, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
+                                            LV_THEME_DEFAULT_DARK, LV_FONT_DEFAULT);
+  lv_display_set_theme(display, theme);
+#endif
 
   lv_group_t* group = lv_group_create();
   lv_group_set_default(group);
@@ -39,6 +52,7 @@ EFI_STATUS EFIAPI UefiMain(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* Syste
   lv_obj_t* cursor = lv_image_create(lv_layer_top());
   LV_IMAGE_DECLARE(image_cursor);
   lv_image_set_src(cursor, &image_cursor);
+  lv_image_set_scale(cursor, scale_factor);
 
   lv_indev_t* indev_simple_text_input = lv_uefi_simple_text_input_indev_create();
   lv_indev_set_group(indev_simple_text_input, group);
@@ -52,80 +66,79 @@ EFI_STATUS EFIAPI UefiMain(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* Syste
   lv_uefi_absolute_pointer_indev_add_all(indev_absolute_pointer);
 
   lv_obj_t* screen = lv_screen_active();
-  lv_obj_set_size(screen, LV_PCT(100), LV_PCT(100));
   lv_obj_set_layout(screen, LV_LAYOUT_FLEX);
   lv_obj_set_flex_flow(screen, LV_FLEX_FLOW_COLUMN);
   lv_obj_set_flex_align(screen, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
-  lv_obj_set_style_pad_top(screen, 200, 0);
-  lv_obj_set_style_pad_bottom(screen, 200, 0);
-  lv_obj_set_style_pad_left(screen, 200, 0);
-  lv_obj_set_style_pad_right(screen, 200, 0);
-  lv_obj_set_style_pad_gap(screen, 100, 0);
+  lv_obj_set_style_pad_top(screen, LV_DPX(20), 0);
+  lv_obj_set_style_pad_bottom(screen, LV_DPX(20), 0);
+  lv_obj_set_style_pad_left(screen, LV_DPX(20), 0);
+  lv_obj_set_style_pad_right(screen, LV_DPX(20), 0);
+  lv_obj_set_style_pad_gap(screen, LV_DPX(10), 0);
   {
     lv_obj_t* label = lv_label_create(screen);
-    lv_obj_set_size(label, 800, 200);
+    lv_obj_set_size(label, LV_DPX(400), LV_DPX(100));
     lv_label_set_text_static(label, "BootLace");
     lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
   }
   {
     lv_obj_t* button = lv_button_create(screen);
-    lv_obj_set_size(button, 800, 200);
+    lv_obj_set_size(button, LV_DPX(400), LV_DPX(100));
     lv_obj_set_style_bg_color(button, lv_color_make(0, 0, 0), 0);
     lv_obj_t* label = lv_label_create(button);
     lv_label_set_text_static(label, "KernelSU");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
+    // lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_center(label);
   }
   {
     lv_obj_t* button = lv_button_create(screen);
-    lv_obj_set_size(button, 800, 200);
+    lv_obj_set_size(button, LV_DPX(400), LV_DPX(100));
     lv_obj_set_style_bg_color(button, lv_color_make(80, 220, 80), 0);
     lv_obj_t* label = lv_label_create(button);
     lv_label_set_text_static(label, "Normal System");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
+    // lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_center(label);
     lv_obj_add_event_cb(button, normal_system_event_cb, LV_EVENT_CLICKED, NULL);
   }
   {
     lv_obj_t* button = lv_button_create(screen);
-    lv_obj_set_size(button, 800, 200);
+    lv_obj_set_size(button, LV_DPX(400), LV_DPX(100));
     lv_obj_t* label = lv_label_create(button);
     lv_label_set_text_static(label, "Recovery");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
+    // lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_center(label);
   }
   {
     lv_obj_t* button = lv_button_create(screen);
-    lv_obj_set_size(button, 800, 200);
+    lv_obj_set_size(button, LV_DPX(400), LV_DPX(100));
     lv_obj_t* label = lv_label_create(button);
     lv_label_set_text_static(label, "Fastboot");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
+    // lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_center(label);
   }
   {
     lv_obj_t* button = lv_button_create(screen);
-    lv_obj_set_size(button, 800, 200);
+    lv_obj_set_size(button, LV_DPX(400), LV_DPX(100));
     lv_obj_t* label = lv_label_create(button);
     lv_label_set_text_static(label, "EDL");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
+    // lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_center(label);
   }
   {
     lv_obj_t* button = lv_button_create(screen);
-    lv_obj_set_size(button, 800, 200);
+    lv_obj_set_size(button, LV_DPX(400), LV_DPX(100));
     lv_obj_t* label = lv_label_create(button);
     lv_label_set_text_static(label, "Reboot");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
+    // lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_center(label);
   }
   {
     lv_obj_t* button = lv_button_create(screen);
-    lv_obj_set_size(button, 800, 200);
+    lv_obj_set_size(button, LV_DPX(400), LV_DPX(100));
     lv_obj_set_style_bg_color(button, lv_color_make(220, 70, 70), 0);
     lv_obj_t* label = lv_label_create(button);
     lv_label_set_text_static(label, "Power Off");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
+    // lv_obj_set_style_text_font(label, &lv_font_montserrat_48, 0);
     lv_obj_center(label);
   }
 
